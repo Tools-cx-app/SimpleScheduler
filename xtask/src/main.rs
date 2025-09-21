@@ -104,15 +104,15 @@ fn build(release: bool, verbose: bool) -> Result<()> {
     fs::create_dir_all(&temp_dir)?;
 
     let mut cargo = cargo_ndk();
-        cargo.args([
-            "build",
-            "--target",
-            "aarch64-linux-android",
-            "-Z",
-            "build-std",
-            "-Z",
-            "trim-paths",
-        ]);
+    cargo.args([
+        "build",
+        "--target",
+        "aarch64-linux-android",
+        "-Z",
+        "build-std",
+        "-Z",
+        "trim-paths",
+    ]);
 
     if release {
         cargo.arg("--release");
