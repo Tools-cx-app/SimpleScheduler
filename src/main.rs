@@ -12,13 +12,18 @@ mod framework;
 
 use std::io::Write;
 
+use anyhow::Result;
 use env_logger::Builder;
 use mimalloc::MiMalloc;
+
+use framework::scheduler;
+
+use crate::framework::config::Config;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 
-fn main() {
+fn main() -> Result<()> {
     let mut builder = Builder::new();
 
     builder.format(|buf, record| {
@@ -35,4 +40,10 @@ fn main() {
         )
     });
     builder.filter_level(log::LevelFilter::Info).init();
+
+    let mut config = Config::new("")?;
+
+    scheduler::Scheduler::new()
+        .config(config.config().clone())
+        .start_run()
 }
