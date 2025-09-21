@@ -13,3 +13,10 @@ chrono = "0.4.42"
 env_logger = "0.11.8"
 log = "0.4.28"
 mimalloc = "0.1.48"
+
+[profile.release]
+overflow-checks = false
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+strip = true
