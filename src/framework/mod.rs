@@ -1,5 +1,5 @@
 pub mod config;
-pub mod scheduler;
 mod error;
+pub mod scheduler;
 
 pub use error::Error;

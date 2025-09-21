@@ -1,4 +1,4 @@
-mod data;
+pub mod data;
 mod read;
 
 use std::{
@@ -44,7 +44,7 @@ impl Config {
         Ok(Self { rx, config: toml })
     }
 
-    fn config(&mut self) -> &mut ConfigData {
+    pub fn config(&mut self) -> &mut ConfigData {
         if let Some(s) = self.rx.try_iter().last() {
             self.config = s;
         }
