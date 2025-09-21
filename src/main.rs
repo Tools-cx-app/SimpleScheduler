@@ -8,6 +8,8 @@
     clippy::cast_possible_wrap
 )]
 
+mod framework;
+
 use std::io::Write;
 
 use env_logger::Builder;
