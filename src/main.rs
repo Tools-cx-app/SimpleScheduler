@@ -2,6 +2,9 @@ use std::io::Write;
 
 use env_logger::Builder;
 
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
 fn main() {
     let mut builder = Builder::new();
 
