@@ -36,7 +36,7 @@ impl Config {
                     wait_until_read(p, &sx).unwrap_or_else(|e| {
                         error!("{e:#?}");
                         panic!();
-                    })
+                    });
                 })
                 .unwrap();
         }
