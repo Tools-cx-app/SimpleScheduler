@@ -2,6 +2,11 @@
 name = "SimpleScheduler"
 version = "0.1.0"
 edition = "2024"
+description = "A Simple Scheduler for Android."
+authors = ["Tools-cx-app"]
+license = "GPL-3.0"
+readme = "README.md"
+repository = "https://github.com/Tools-cx-app/SimpleScheduler"
 
 [dependencies]
 chrono = "0.4.42"
