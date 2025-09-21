@@ -1,6 +1,7 @@
 use std::io::Write;
 
 use env_logger::Builder;
+use mimalloc::MiMalloc;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
