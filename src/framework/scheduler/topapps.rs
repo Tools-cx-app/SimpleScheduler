@@ -73,4 +73,8 @@ impl TopWatcher {
 
         &self.info
     }
+
+    pub fn visible_freeform_window(&self) -> bool {
+        self.info.visible_freeform_window
+    }
 }
