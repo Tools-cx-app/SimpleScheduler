@@ -1,12 +1,18 @@
 mod looper;
 mod topapps;
 
+use std::sync::mpsc::Receiver;
+
 use anyhow::Result;
 
-use crate::framework::{Error, config::data::ConfigData, scheduler::looper::Looper};
+use crate::framework::{
+    Error,
+    config::{Config, data::ConfigData},
+    scheduler::looper::Looper,
+};
 
 pub struct Scheduler {
-    config: Option<ConfigData>,
+    config: Option<Config>,
 }
 
 impl Scheduler {
@@ -15,7 +21,7 @@ impl Scheduler {
         Self { config: None }
     }
 
-    pub fn config(mut self, c: ConfigData) -> Self {
+    pub fn config(mut self, c: Config) -> Self {
         self.config = Some(c);
         self
     }

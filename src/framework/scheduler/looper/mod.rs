@@ -1,18 +1,18 @@
 use anyhow::Result;
 
-use crate::framework::{config::data::ConfigData, scheduler::topapps::TopWatcher};
+use crate::framework::{config::Config, scheduler::topapps::TopWatcher};
 
 struct SimpleSchedulerData {
     topapps: TopWatcher,
 }
 
 pub struct Looper {
-    config: ConfigData,
+    config: Config,
     data: SimpleSchedulerData,
 }
 
 impl Looper {
-    pub fn new(c: ConfigData) -> Self {
+    pub fn new(c: Config) -> Self {
         Self {
             config: c,
             data: SimpleSchedulerData {

@@ -43,7 +43,5 @@ fn main() -> Result<()> {
 
     let mut config = Config::new("")?;
 
-    scheduler::Scheduler::new()
-        .config(config.config().clone())
-        .start_run()
+    scheduler::Scheduler::new().config(config).start_run()
 }
