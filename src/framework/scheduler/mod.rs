@@ -17,7 +17,7 @@ pub struct Scheduler {
 
 impl Scheduler {
     #[must_use]
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self { config: None }
     }
 

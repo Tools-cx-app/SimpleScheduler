@@ -25,8 +25,8 @@ impl TopAppData {
             || dump.contains("FlexibleTaskIndicatorView");
 
         Self {
-            pids,
             visible_freeform_window,
+            pids,
         }
     }
 
@@ -74,7 +74,7 @@ impl TopWatcher {
         &self.info
     }
 
-    pub fn visible_freeform_window(&self) -> bool {
+    pub const fn visible_freeform_window(&self) -> bool {
         self.info.visible_freeform_window
     }
 }
