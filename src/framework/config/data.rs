@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConfigData {
-    config: Config,
+    pub config: Config,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
