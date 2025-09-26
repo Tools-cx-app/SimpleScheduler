@@ -9,6 +9,8 @@
 )]
 
 mod framework;
+mod cpu;
+mod files_handler;
 
 use std::io::Write;
 
