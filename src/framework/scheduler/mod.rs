@@ -1,4 +1,5 @@
 mod looper;
+mod topapps;
 
 use anyhow::Result;
 
