@@ -23,6 +23,9 @@ impl Looper {
 
     pub fn enter_looper(&mut self) -> Result<()> {
         loop {
+            if self.data.topapps.visible_freeform_window() {
+                continue;
+            }
             self.reflash_topapps();
         }
     }
