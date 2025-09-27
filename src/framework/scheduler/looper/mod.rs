@@ -65,9 +65,7 @@ impl Looper {
                 "powersave" => Ok(SimpleSchedulerMode::Powersave),
                 "bablance" => Ok(SimpleSchedulerMode::Bablance),
                 "performance" => Ok(SimpleSchedulerMode::Performance),
-                _ => {
-                    return Err(Error::ConfigParse("general option"));
-                }
+                _ => Err(Error::ConfigParse("general option")),
             }
         }
     }
