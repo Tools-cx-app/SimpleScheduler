@@ -11,6 +11,6 @@ pub struct ConfigData {
 pub struct Config {
     pub general: String,
     pub powersave: HashSet<String>,
-    pub bablance: HashSet<String>,
+    pub balance: HashSet<String>,
     pub performance: HashSet<String>,
 }

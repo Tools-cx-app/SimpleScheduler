@@ -70,7 +70,7 @@ impl Looper {
     fn list_include_target(&mut self, target: &str) -> Result<SimpleSchedulerMode, Error> {
         let config = &self.config.config().config;
 
-        if config.bablance.contains(target) {
+        if config.balance.contains(target) {
             return Ok(SimpleSchedulerMode::Bablance);
         } else if config.powersave.contains(target) {
             return Ok(SimpleSchedulerMode::Powersave);
