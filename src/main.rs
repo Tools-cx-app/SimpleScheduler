@@ -44,7 +44,7 @@ fn main() -> Result<()> {
     });
     builder.filter_level(log::LevelFilter::Info).init();
 
-    let mut config = Config::new("")?;
+    let mut config = Config::new("/data/config.toml")?;
 
     scheduler::Scheduler::new().config(config).start_run()
 }
