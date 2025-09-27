@@ -11,7 +11,7 @@ use std::{
 use anyhow::Result;
 use log::error;
 
-use crate::framework::config::{data::ConfigData, read::wait_until_read};
+use crate::framework::config::{data::ConfigData, read::wait_until_modify};
 
 #[derive(Debug)]
 pub struct Config {
