@@ -20,9 +20,7 @@ use env_logger::Builder;
 use log::error;
 use mimalloc::MiMalloc;
 
-use framework::scheduler;
-
-use crate::framework::config::Config;
+use crate::framework::{config::Config, scheduler};
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
