@@ -44,17 +44,14 @@ impl Looper {
         let mut updated = false;
         loop {
             self.reflash_topapps();
-            if self.data.topapps.visible_freeform_window() {
-                continue;
-            }
-            if self.data.topapps.pids().is_empty() {
+            if !self.check_all() {
                 continue;
             }
             if !updated {
                 self.last.topapps = self.data.topapps.pids();
                 updated = true;
             }
-            
+
             let pid = self.data.topapps.pids()[0];
             let pid_cache = self.last.topapps[0];
             let name = get_process_name_by_pid(pid)?;
@@ -69,6 +66,17 @@ impl Looper {
 
     fn reflash_topapps(&mut self) {
         self.data.topapps.info();
+    }
+
+    fn check_all(&self) -> bool {
+        if self.data.topapps.visible_freeform_window() {
+            return false;
+        }
+        if self.data.topapps.pids().is_empty() {
+            return false;
+        }
+
+        true
     }
 
     fn list_include_target(&mut self, target: &str) -> Result<(SimpleSchedulerMode, bool), Error> {
