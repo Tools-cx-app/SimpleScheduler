@@ -1,0 +1,46 @@
+name: ci-build
+on:
+  push:
+    branchs: [master]
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  build:
+    if: |
+      github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup ndk
+        run: |
+          ndk_url=$(wget -qO- https://github.com/android/ndk/releases/latest | grep -e 'https://dl.google.com/android/repository/android-ndk-.*-linux.zip' | sed -n 's/.*<a href="\([^"]*\)".*/\1/p')
+          wget -O ndk.zip $ndk_url -nv
+          mkdir -p ~/ndk_temp
+          unzip ndk.zip -d ~/ndk_temp 2>&1 > /dev/null
+          mv ~/ndk_temp/*/* ~/ndk_temp
+      
+      # Rust工具链设置
+      - name: Setup Rust toolchains
+        run: |
+          rustup default nightly
+          rustup target add aarch64-linux-android
+          rustup component add rust-src
+      
+      # 安装构建依赖
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-multilib patch
+          cargo install cargo-ndk --locked
+      
+      # 构建项目
+      - name: Build
+        run: |
+          export ANDROID_NDK_HOME=~/ndk_temp
+          export ANDROID_NDK_ROOT=~/ndk_temp
+          
+          # 构建发布版本
+          cargo ndk -t arm64-v8a -t armeabi-v7a build -r
