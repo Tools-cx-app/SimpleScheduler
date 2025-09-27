@@ -66,11 +66,11 @@ impl CpuFreqs {
 
         files_handler.write_with_handler(
             self.path.join("scaling_max_freq"),
-            &target_max_freq.to_string(),
+            target_max_freq.to_string(),
         )?;
         files_handler.write_with_handler(
             self.path.join("scaling_min_freq"),
-            &target_min_freq.to_string(),
+            target_min_freq.to_string(),
         )?;
         Ok(())
     }
