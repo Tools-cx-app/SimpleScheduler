@@ -47,10 +47,14 @@ impl Looper {
             if self.data.topapps.visible_freeform_window() {
                 continue;
             }
+            if self.data.topapps.pids().len() == 0 {
+                continue;
+            }
             if !updated {
                 self.last.topapps = self.data.topapps.pids();
                 updated = true;
             }
+            log::debug!("{}", self.data.topapps.pids().len());
             let pid = self.data.topapps.pids()[0];
             let pid_cache = self.last.topapps[0];
             let name = get_process_name_by_pid(pid)?;
