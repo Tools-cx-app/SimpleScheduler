@@ -17,11 +17,12 @@ use std::io::Write;
 
 use anyhow::Result;
 use env_logger::Builder;
+use log::error;
 use mimalloc::MiMalloc;
 
 use framework::scheduler;
 
-use crate::framework::config::Config;
+use crate::framework::{Error, config::Config};
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -46,5 +47,13 @@ fn main() -> Result<()> {
 
     let mut config = Config::new("/data/config.toml")?;
 
-    scheduler::Scheduler::new().config(config).start_run()
+    scheduler::Scheduler::new()
+        .config(config)
+        .start_run()
+        .unwrap_or_else(|e| {
+            error!("{e:#?}");
+            panic!()
+        });
+
+    Ok(())
 }
