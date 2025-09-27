@@ -8,7 +8,7 @@ use crate::framework::config::data::ConfigData;
 
 const MAX_RETRY_COUNT: u8 = 20;
 
-pub(super) fn wait_until_read<P>(path: P, sx: &Sender<ConfigData>) -> Result<()>
+pub(super) fn wait_until_modify<P>(path: P, sx: &Sender<ConfigData>) -> Result<()>
 where
     P: AsRef<Path>,
 {

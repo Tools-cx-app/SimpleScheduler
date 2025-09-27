@@ -34,7 +34,7 @@ impl Config {
             thread::Builder::new()
                 .name("ConfigWatcher".into())
                 .spawn(move || {
-                    wait_until_read(p, &sx).unwrap_or_else(|e| {
+                    wait_until_modify(p, &sx).unwrap_or_else(|e| {
                         error!("{e:#?}");
                         panic!();
                     });
