@@ -59,8 +59,8 @@ impl Looper {
             let pid_cache = self.last.topapps[0];
             let name = get_process_name_by_pid(pid)?;
             let name_cache = get_process_name_by_pid(pid_cache)?;
-            let mode = self.list_include_target(&name)?;
-            if name != name_cache {
+            let (mode, is_list) = self.list_include_target(&name)?;
+            if name != name_cache && is_list {
                 info!("New buffer for {name}(mode: {mode})");
                 self.last.topapps = self.data.topapps.pids();
             }
@@ -71,22 +71,25 @@ impl Looper {
         self.data.topapps.info();
     }
 
-    fn list_include_target(&mut self, target: &str) -> Result<SimpleSchedulerMode, Error> {
+    fn list_include_target(&mut self, target: &str) -> Result<(SimpleSchedulerMode, bool), Error> {
         let config = &self.config.config().config;
+        let ret;
 
         if config.balance.contains(target) {
-            return Ok(SimpleSchedulerMode::Bablance);
+            ret = SimpleSchedulerMode::Bablance;
         } else if config.powersave.contains(target) {
-            return Ok(SimpleSchedulerMode::Powersave);
+            ret = SimpleSchedulerMode::Powersave;
         } else if config.performance.contains(target) {
-            return Ok(SimpleSchedulerMode::Performance);
+            ret = SimpleSchedulerMode::Performance;
+        } else {
+            ret = match config.general.as_str() {
+                "powersave" => SimpleSchedulerMode::Powersave,
+                "bablance" => SimpleSchedulerMode::Bablance,
+                "performance" => SimpleSchedulerMode::Performance,
+                _ => return Err(Error::ConfigParse("general option")),
+            }
         }
 
-        match config.general.as_str() {
-            "powersave" => Ok(SimpleSchedulerMode::Powersave),
-            "bablance" => Ok(SimpleSchedulerMode::Bablance),
-            "performance" => Ok(SimpleSchedulerMode::Performance),
-            _ => Err(Error::ConfigParse("general option")),
-        }
+        Ok((ret, true))
     }
 }
