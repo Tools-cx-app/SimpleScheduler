@@ -43,7 +43,7 @@ impl CpuFreqs {
         })
     }
 
-    fn verify_freq(&mut self, target_freq: isize) -> Result<()> {
+    fn verify_freq(&self, target_freq: isize) -> Result<()> {
         let min_freq = *self.freqs.first().context("No frequencies available")?;
         let max_freq = *self.freqs.last().context("No frequencies available")?;
 
@@ -54,7 +54,7 @@ impl CpuFreqs {
     }
 
     pub fn write_freq(
-        &mut self,
+        &self,
         target_max_freq: isize,
         target_min_freq: isize,
         files_handler: &mut FilesHandler,
