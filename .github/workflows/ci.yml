@@ -43,4 +43,4 @@ jobs:
           export ANDROID_NDK_ROOT=~/ndk_temp
           
           # 构建发布版本
-          cargo ndk -t arm64-v8a -t armeabi-v7a build -r
+          cargo ndk -t arm64-v8a build -r
