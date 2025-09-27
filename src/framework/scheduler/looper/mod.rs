@@ -1,9 +1,21 @@
-use anyhow::Result;
+mod fmt;
 
-use crate::framework::{config::Config, scheduler::topapps::TopWatcher};
+use anyhow::Result;
+use log::{error, info};
+
+use crate::{
+    framework::{config::Config, scheduler::topapps::TopWatcher},
+    msic::get_process_name_by_pid,
+};
 
 struct SimpleSchedulerData {
     topapps: TopWatcher,
+}
+
+enum SimpleSchedulerMode {
+    Powersave,
+    Bablance,
+    Performance,
 }
 
 pub struct Looper {
@@ -26,11 +38,37 @@ impl Looper {
             if self.data.topapps.visible_freeform_window() {
                 continue;
             }
+
+            let pid = self.data.topapps.pids()[0];
+            let name = get_process_name_by_pid(pid)?;
+            let mode = self.list_include_target(&name);
+
+            info!("New buffer for {name}, mode {mode}");
             self.reflash_topapps();
         }
     }
 
     fn reflash_topapps(&mut self) {
         self.data.topapps.info();
+    }
+
+    fn list_include_target(&mut self, target: &str) -> SimpleSchedulerMode {
+        if self.config.config().config.bablance.contains(target) {
+            SimpleSchedulerMode::Bablance
+        } else if self.config.config().config.powersave.contains(target) {
+            SimpleSchedulerMode::Powersave
+        } else if self.config.config().config.performance.contains(target) {
+            SimpleSchedulerMode::Performance
+        } else {
+            match self.config.config().config.general.as_str() {
+                "powersave" => SimpleSchedulerMode::Powersave,
+                "bablance" => SimpleSchedulerMode::Bablance,
+                "performance" => SimpleSchedulerMode::Performance,
+                _ => {
+                    error!("general config error");
+                    panic!();
+                }
+            }
+        }
     }
 }

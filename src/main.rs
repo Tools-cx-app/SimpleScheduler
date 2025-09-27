@@ -8,9 +8,10 @@
     clippy::cast_possible_wrap
 )]
 
-mod framework;
 mod cpu;
 mod files_handler;
+mod framework;
+mod msic;
 
 use std::io::Write;
 

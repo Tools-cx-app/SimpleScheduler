@@ -7,8 +7,8 @@ const REFRESH_TIME: Duration = Duration::from_millis(500);
 
 #[derive(Default)]
 pub struct TopAppData {
-    pub visible_freeform_window: bool,
-    pub pids: Vec<i32>,
+    visible_freeform_window: bool,
+    pids: Vec<i32>,
 }
 
 pub struct TopWatcher {
@@ -74,7 +74,12 @@ impl TopWatcher {
         &self.info
     }
 
-    pub const fn visible_freeform_window(&self) -> bool {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn visible_freeform_window(&self) -> bool {
         self.info.visible_freeform_window
+    }
+
+    pub fn pids(&self) -> Vec<i32> {
+        self.info.pids.clone()
     }
 }

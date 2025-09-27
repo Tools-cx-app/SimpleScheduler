@@ -13,6 +13,7 @@ use log::error;
 
 use crate::framework::config::{data::ConfigData, read::wait_until_read};
 
+#[derive(Debug)]
 pub struct Config {
     rx: Receiver<ConfigData>,
     config: ConfigData,
