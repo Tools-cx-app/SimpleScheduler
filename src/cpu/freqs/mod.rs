@@ -55,16 +55,23 @@ impl CpuFreqs {
 
     pub fn write_freq(
         &mut self,
-        target_freq: isize,
+        target_max_freq: isize,
+        target_min_freq: isize,
         files_handler: &mut FilesHandler,
     ) -> Result<()> {
-        self.verify_freq(target_freq)
+        self.verify_freq(target_max_freq)
+            .context("Failed to freq verify")?;
+        self.verify_freq(target_min_freq)
             .context("Failed to freq verify")?;
 
-        files_handler
-            .write_with_handler(self.path.join("scaling_max_freq"), &target_freq.to_string())?;
-        files_handler
-            .write_with_handler(self.path.join("scaling_min_freq"), &target_freq.to_string())?;
+        files_handler.write_with_handler(
+            self.path.join("scaling_max_freq"),
+            &target_max_freq.to_string(),
+        )?;
+        files_handler.write_with_handler(
+            self.path.join("scaling_min_freq"),
+            &target_min_freq.to_string(),
+        )?;
         Ok(())
     }
 }
