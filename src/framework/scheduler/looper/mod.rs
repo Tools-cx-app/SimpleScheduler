@@ -35,6 +35,7 @@ impl Looper {
 
     pub fn enter_looper(&mut self) -> Result<()> {
         loop {
+            self.reflash_topapps();
             if self.data.topapps.visible_freeform_window() {
                 continue;
             }
@@ -42,9 +43,6 @@ impl Looper {
             let pid = self.data.topapps.pids()[0];
             let name = get_process_name_by_pid(pid)?;
             let mode = self.list_include_target(&name)?;
-
-            info!("New buffer for {name}, mode {mode}");
-            self.reflash_topapps();
         }
     }
 
