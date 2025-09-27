@@ -53,20 +53,21 @@ impl Looper {
     }
 
     fn list_include_target(&mut self, target: &str) -> Result<SimpleSchedulerMode, Error> {
-        let config = self.config.config().config.clone();
+        let config = &self.config.config().config;
+
         if config.bablance.contains(target) {
-            Ok(SimpleSchedulerMode::Bablance)
+            return Ok(SimpleSchedulerMode::Bablance);
         } else if config.powersave.contains(target) {
-            Ok(SimpleSchedulerMode::Powersave)
+            return Ok(SimpleSchedulerMode::Powersave);
         } else if config.performance.contains(target) {
-            Ok(SimpleSchedulerMode::Performance)
-        } else {
-            match config.general.as_str() {
-                "powersave" => Ok(SimpleSchedulerMode::Powersave),
-                "bablance" => Ok(SimpleSchedulerMode::Bablance),
-                "performance" => Ok(SimpleSchedulerMode::Performance),
-                _ => Err(Error::ConfigParse("general option")),
-            }
+            return Ok(SimpleSchedulerMode::Performance);
+        }
+
+        match config.general.as_str() {
+            "powersave" => Ok(SimpleSchedulerMode::Powersave),
+            "bablance" => Ok(SimpleSchedulerMode::Bablance),
+            "performance" => Ok(SimpleSchedulerMode::Performance),
+            _ => Err(Error::ConfigParse("general option")),
         }
     }
 }
