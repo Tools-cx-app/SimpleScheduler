@@ -19,7 +19,7 @@ enum SimpleSchedulerMode {
 }
 
 struct LastCache {
-    topapp: TopWatcher,
+    topapps: Vec<i32>,
 }
 pub struct Looper {
     config: Config,
@@ -35,7 +35,7 @@ impl Looper {
                 topapps: TopWatcher::new(),
             },
             last: LastCache {
-                topapp: TopWatcher::new(),
+                topapps: Vec::new(),
             },
         }
     }
@@ -48,17 +48,17 @@ impl Looper {
                 continue;
             }
             if !updated {
-                self.last.topapp = self.data.topapps.clone();
+                self.last.topapps = self.data.topapps.pids();
                 updated = true;
             }
             let pid = self.data.topapps.pids()[0];
-            let pid_cache = self.last.topapp.clone().pids()[0];
+            let pid_cache = self.last.topapps[0];
             let name = get_process_name_by_pid(pid)?;
             let name_cache = get_process_name_by_pid(pid_cache)?;
             let mode = self.list_include_target(&name)?;
             if name != name_cache {
                 info!("New buffer for {name}(mode: {mode})");
-                self.last.topapp = self.data.topapps.clone();
+                self.last.topapps = self.data.topapps.pids();
             }
         }
     }
