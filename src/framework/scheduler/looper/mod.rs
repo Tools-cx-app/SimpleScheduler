@@ -18,9 +18,13 @@ enum SimpleSchedulerMode {
     Performance,
 }
 
+struct LastCache {
+    topapp: TopWatcher,
+}
 pub struct Looper {
     config: Config,
     data: SimpleSchedulerData,
+    last: LastCache,
 }
 
 impl Looper {
@@ -30,19 +34,32 @@ impl Looper {
             data: SimpleSchedulerData {
                 topapps: TopWatcher::new(),
             },
+            last: LastCache {
+                topapp: TopWatcher::new(),
+            },
         }
     }
 
     pub fn enter_looper(&mut self) -> Result<()> {
+        let mut updated = false;
         loop {
             self.reflash_topapps();
             if self.data.topapps.visible_freeform_window() {
                 continue;
             }
-
+            if !updated {
+                self.last.topapp = self.data.topapps.clone();
+                updated = true;
+            }
             let pid = self.data.topapps.pids()[0];
+            let pid_cache = self.last.topapp.clone().pids()[0];
             let name = get_process_name_by_pid(pid)?;
+            let name_cache = get_process_name_by_pid(pid_cache)?;
             let mode = self.list_include_target(&name)?;
+            if name != name_cache {
+                info!("New buffer for {name}(mode: {mode})");
+                self.last.topapp = self.data.topapps.clone();
+            }
         }
     }
 
