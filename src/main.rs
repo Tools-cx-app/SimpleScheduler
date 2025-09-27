@@ -22,7 +22,7 @@ use mimalloc::MiMalloc;
 
 use framework::scheduler;
 
-use crate::framework::{Error, config::Config};
+use crate::framework::config::Config;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -45,7 +45,7 @@ fn main() -> Result<()> {
     });
     builder.filter_level(log::LevelFilter::Info).init();
 
-    let mut config = Config::new("/data/config.toml")?;
+    let config = Config::new("/data/config.toml")?;
 
     scheduler::Scheduler::new()
         .config(config)

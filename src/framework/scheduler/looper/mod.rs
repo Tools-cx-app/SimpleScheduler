@@ -1,7 +1,7 @@
 mod fmt;
 
 use anyhow::Result;
-use log::{error, info};
+use log::info;
 
 use crate::{
     framework::{Error, config::Config, scheduler::topapps::TopWatcher},

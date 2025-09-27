@@ -1,15 +1,9 @@
 mod looper;
 mod topapps;
 
-use std::sync::mpsc::Receiver;
-
 use anyhow::Result;
 
-use crate::framework::{
-    Error,
-    config::{Config, data::ConfigData},
-    scheduler::looper::Looper,
-};
+use crate::framework::{Error, config::Config, scheduler::looper::Looper};
 
 pub struct Scheduler {
     config: Option<Config>,
