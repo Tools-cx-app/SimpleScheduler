@@ -21,7 +21,7 @@ log = "0.4.28"
 mimalloc = "0.1.48"
 serde = { version = "1.0.227", features = ["serde_derive"] }
 sys-mount = "3.0.1"
-thiserror = "2.0.16"
+thiserror = "2.0.17"
 toml = "0.9.7"
 
 [build-dependencies]
