@@ -23,6 +23,6 @@ impl Scheduler {
     pub fn start_run(self) -> Result<()> {
         let config = self.config.ok_or(Error::SchedulerMissing("Config"))?;
 
-        Looper::new(config).enter_looper()
+        Looper::new(config)?.enter_looper()
     }
 }

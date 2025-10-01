@@ -1,9 +1,13 @@
 mod fmt;
 
+use std::path::PathBuf;
+
 use anyhow::Result;
 use log::info;
 
 use crate::{
+    cpu::{governors::CpuGovernors, misc::read_policy},
+    files_handler::FilesHandler,
     framework::{Error, config::Config, scheduler::topapps::TopWatcher},
     msic::get_process_name_by_pid,
 };
@@ -25,11 +29,15 @@ pub struct Looper {
     config: Config,
     data: SimpleSchedulerData,
     last: LastCache,
+    policys: Vec<PathBuf>,
+    files_handler: FilesHandler,
 }
 
 impl Looper {
-    pub fn new(c: Config) -> Self {
-        Self {
+    pub fn new(c: Config) -> Result<Self> {
+        let policys = read_policy()?;
+        let files_handler = FilesHandler::new();
+        Ok(Self {
             config: c,
             data: SimpleSchedulerData {
                 topapps: TopWatcher::new(),
@@ -37,12 +45,15 @@ impl Looper {
             last: LastCache {
                 topapps: Vec::new(),
             },
-        }
+            policys,
+            files_handler,
+        })
     }
 
     pub fn enter_looper(&mut self) -> Result<()> {
         let mut updated = false;
         loop {
+            self.reflash_governors()?;
             self.reflash_topapps();
             if !self.check_all() {
                 continue;
@@ -62,6 +73,14 @@ impl Looper {
                 self.last.topapps = self.data.topapps.pids();
             }
         }
+    }
+
+    fn reflash_governors(&mut self) -> Result<()> {
+        for i in self.policys.clone() {
+            let governors = CpuGovernors::new(i)?;
+            governors.auto_write(&mut self.files_handler)?;
+        }
+        Ok(())
     }
 
     fn reflash_topapps(&mut self) {
