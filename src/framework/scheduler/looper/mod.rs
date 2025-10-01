@@ -36,7 +36,6 @@ pub struct Looper {
 impl Looper {
     pub fn new(c: Config) -> Result<Self> {
         let policys = read_policy()?;
-        let files_handler = FilesHandler::new();
         Ok(Self {
             config: c,
             data: SimpleSchedulerData {
@@ -46,7 +45,7 @@ impl Looper {
                 topapps: Vec::new(),
             },
             policys,
-            files_handler,
+            files_handler: FilesHandler::new(),
         })
     }
 
