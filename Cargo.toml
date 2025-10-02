@@ -19,16 +19,16 @@ env_logger = "0.11.8"
 inotify = "0.11.0"
 log = "0.4.28"
 mimalloc = "0.1.48"
-serde = { version = "1.0.227", features = ["serde_derive"] }
+serde = { version = "1.0.228", features = ["serde_derive"] }
 sys-mount = "3.0.1"
-thiserror = "2.0.16"
+thiserror = "2.0.17"
 toml = "0.9.7"
 
 [build-dependencies]
 anyhow = "1.0.100"
 toml = "0.9.7"
 serde_json = "1.0.145"
-serde = { version = "1.0.227", features = ["derive"] }
+serde = { version = "1.0.228", features = ["derive"] }
 
 [profile.release]
 overflow-checks = false
