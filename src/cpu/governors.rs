@@ -53,4 +53,17 @@ impl CpuGovernors {
 
         Ok(())
     }
+
+    pub fn auto_write_games(&self, files_handler: &mut FilesHandler) -> Result<()> {
+        if self.governors.contains(&"scx".to_string()) {
+            files_handler.write_with_handler(self.path.join("scaling_governor"), "scx")?;
+        }
+        if self.governors.contains(&"walt".to_string()) {
+            files_handler.write_with_handler(self.path.join("scaling_governor"), "walt")?;
+        } else {
+            files_handler.write_with_handler(self.path.join("scaling_governor"), "schedutil")?;
+        }
+
+        Ok(())
+    }
 }

@@ -52,7 +52,7 @@ impl Looper {
     pub fn enter_looper(&mut self) -> Result<()> {
         let mut updated = false;
         loop {
-            self.reflash_governors()?;
+            self.reflash_governors(false)?;
             self.reflash_topapps();
             if !self.check_all() {
                 continue;
@@ -68,16 +68,19 @@ impl Looper {
             let name_cache = get_process_name_by_pid(pid_cache)?;
             let (mode, is_list) = self.list_include_target(&name)?;
             if name != name_cache && is_list {
+                self.reflash_governors(true)?;
                 info!("New buffer for {name}(mode: {mode})");
                 self.last.topapps = self.data.topapps.pids();
             }
         }
     }
 
-    fn reflash_governors(&mut self) -> Result<()> {
+    fn reflash_governors(&mut self, game: bool) -> Result<()> {
         for i in self.policys.clone() {
             let governors = CpuGovernors::new(i)?;
-            governors.auto_write(&mut self.files_handler)?;
+            if game {
+            governors.auto_write_games(&mut self.files_handler)?;
+            } else {governors.auto_write(&mut self.files_handler)?;}
         }
         Ok(())
     }
