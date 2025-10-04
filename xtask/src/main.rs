@@ -134,7 +134,7 @@ fn build(release: bool, verbose: bool) -> Result<()> {
     fs::remove_file(temp_dir.join(".gitignore")).unwrap();
     file::copy(
         bin_path(release),
-        temp_dir.join("fas-rs-next"),
+        temp_dir.join("SimpleScheduler"),
         &file::CopyOptions::new().overwrite(true),
     )
     .unwrap();

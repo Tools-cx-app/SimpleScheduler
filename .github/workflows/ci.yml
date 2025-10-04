@@ -42,5 +42,16 @@ jobs:
           export ANDROID_NDK_HOME=~/ndk_temp
           export ANDROID_NDK_ROOT=~/ndk_temp
           
-          # 构建发布版本
-          cargo ndk -t arm64-v8a build -r
+          cargo xtask build -r -v
+      - name: Cleanup
+        run: rm -rf ~/ndk_temp
+      - name: Prepare artifacts
+        run: |
+          mkdir -p output/artifact/release
+          unzip "output/SimpleScheduler(release).zip" -d output/artifact/release
+      - name: Upload release version
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimpleScheduler(release)
+          compression-level: 9
+          path: output/artifact/release
