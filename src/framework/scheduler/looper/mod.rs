@@ -6,7 +6,7 @@ use anyhow::Result;
 use log::info;
 
 use crate::{
-    cpu::{governors::CpuGovernors, misc::read_policy},
+    cpu::{freqs::CpuFreqs, governors::CpuGovernors, misc::read_policy},
     files_handler::FilesHandler,
     framework::{Error, config::Config, scheduler::topapps::TopWatcher},
     msic::get_process_name_by_pid,
@@ -16,6 +16,7 @@ struct SimpleSchedulerData {
     topapps: TopWatcher,
 }
 
+#[derive(Clone, Debug)]
 enum SimpleSchedulerMode {
     Powersave,
     Bablance,
@@ -31,6 +32,7 @@ pub struct Looper {
     last: LastCache,
     policys: Vec<PathBuf>,
     files_handler: FilesHandler,
+    mode: Option<SimpleSchedulerMode>,
 }
 
 impl Looper {
@@ -46,6 +48,7 @@ impl Looper {
             },
             policys,
             files_handler: FilesHandler::new(),
+            mode: None,
         })
     }
 
@@ -67,8 +70,12 @@ impl Looper {
             let name = get_process_name_by_pid(pid)?;
             let name_cache = get_process_name_by_pid(pid_cache)?;
             let (mode, is_list) = self.list_include_target(&name)?;
+
+            self.mode = Some(mode.clone());
+
             if name != name_cache && is_list {
                 self.reflash_governors(true)?;
+                self.write_cpu_freqs()?;
                 info!("New buffer for {name}(mode: {mode})");
                 self.last.topapps = self.data.topapps.pids();
             }
@@ -79,9 +86,28 @@ impl Looper {
         for i in self.policys.clone() {
             let governors = CpuGovernors::new(i)?;
             if game {
-            governors.auto_write_games(&mut self.files_handler)?;
-            } else {governors.auto_write(&mut self.files_handler)?;}
+                governors.auto_write_games(&mut self.files_handler)?;
+            } else {
+                governors.auto_write(&mut self.files_handler)?;
+            }
         }
+        Ok(())
+    }
+
+    fn write_cpu_freqs(&mut self) -> Result<()> {
+        for i in self.policys.clone() {
+            let cpus = CpuFreqs::new(i)?;
+            let (target_max_freq, target_min_freq) = {
+                let config = self.config.config().freqs.clone();
+                match self.mode.clone().unwrap_or(SimpleSchedulerMode::Bablance) {
+                    SimpleSchedulerMode::Powersave => config.powersave,
+                    SimpleSchedulerMode::Bablance => config.balance,
+                    SimpleSchedulerMode::Performance => config.performance,
+                }
+            };
+            cpus.write_freq(target_max_freq, target_min_freq, &mut self.files_handler)?;
+        }
+
         Ok(())
     }
 
