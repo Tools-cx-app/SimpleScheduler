@@ -147,7 +147,7 @@ fn build(release: bool, verbose: bool) -> Result<()> {
         .compression_level(Some(9));
     zip_create_from_directory_with_options(&package_path, &temp_dir, |_| options).unwrap();
 
-    println!("SimpleScheduler built successfully: {:?}", package_path);
+    println!("SimpleScheduler built successfully: {package_path:?}");
 
     Ok(())
 }
