@@ -13,7 +13,7 @@ mod files_handler;
 mod framework;
 mod msic;
 
-use std::io::Write;
+use std::{env, io::Write};
 
 use anyhow::Result;
 use env_logger::Builder;
@@ -43,7 +43,8 @@ fn main() -> Result<()> {
     });
     builder.filter_level(log::LevelFilter::Info).init();
 
-    let config = Config::new("/data/config.toml")?;
+    let args: Vec<_> = env::args().collect();
+    let config = Config::new(&args[1])?;
 
     scheduler::Scheduler::new()
         .config(config)
