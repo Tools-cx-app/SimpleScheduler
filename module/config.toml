@@ -1,0 +1,11 @@
+[config]
+general = "powersave"
+powersave = [""]
+balance = [""]
+performance = [""]
+
+[freqs]
+general = [300000, 300000]
+powersave = [300000, 300000]
+balance = [300000, 300000]
+performance = [300000, 300000]
