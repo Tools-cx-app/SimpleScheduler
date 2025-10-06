@@ -70,6 +70,7 @@ impl Looper {
                 self.mode = Some(SimpleSchedulerMode::Powersave);
                 self.write_cpu_freqs()?;
                 self.reflash_governors(false)?;
+                std::thread::sleep(std::time::Duration::from_secs(1));
             }
             if !updated {
                 self.last.topapps = self.data.topapps.pids();
@@ -90,7 +91,7 @@ impl Looper {
                 info!("New buffer for {name}(mode: {mode})");
                 self.last.topapps = self.data.topapps.pids();
             }
-
+            
             std::thread::sleep(std::time::Duration::from_secs(1));
         }
     }
