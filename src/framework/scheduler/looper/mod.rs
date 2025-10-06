@@ -91,7 +91,6 @@ impl Looper {
                 info!("New buffer for {name}(mode: {mode})");
                 self.last.topapps = self.data.topapps.pids();
             } else {
-                self.mode = Some(SimpleSchedulerMode::Powersave);
                 self.write_cpu_freqs()?;
                 self.reflash_governors(false)?;
             }
