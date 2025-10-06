@@ -1,5 +1,6 @@
 mod looper;
 mod topapps;
+mod wake;
 
 use anyhow::Result;
 

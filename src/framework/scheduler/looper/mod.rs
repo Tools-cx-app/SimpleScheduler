@@ -8,7 +8,11 @@ use log::info;
 use crate::{
     cpu::{freqs::CpuFreqs, governors::CpuGovernors, misc::read_policy},
     files_handler::FilesHandler,
-    framework::{Error, config::Config, scheduler::topapps::TopWatcher},
+    framework::{
+        Error,
+        config::Config,
+        scheduler::{topapps::TopWatcher, wake::Wake},
+    },
     msic::get_process_name_by_pid,
 };
 
@@ -32,6 +36,7 @@ pub struct Looper {
     last: LastCache,
     policys: Vec<PathBuf>,
     files_handler: FilesHandler,
+    wake: Wake,
     mode: Option<SimpleSchedulerMode>,
 }
 
@@ -48,6 +53,7 @@ impl Looper {
             },
             policys,
             files_handler: FilesHandler::new(),
+            wake: Wake::new(),
             mode: None,
         })
     }
@@ -56,9 +62,14 @@ impl Looper {
         let mut updated = false;
         loop {
             self.reflash_governors(false)?;
-            self.reflash_topapps();
+            self.reflash_data();
             if !self.check_all() {
                 continue;
+            }
+            if !self.wake.info() {
+                self.mode = Some(SimpleSchedulerMode::Powersave);
+                self.write_cpu_freqs()?;
+                self.reflash_governors(false)?;
             }
             if !updated {
                 self.last.topapps = self.data.topapps.pids();
@@ -111,7 +122,7 @@ impl Looper {
         Ok(())
     }
 
-    fn reflash_topapps(&mut self) {
+    fn reflash_data(&mut self) {
         self.data.topapps.info();
     }
 
