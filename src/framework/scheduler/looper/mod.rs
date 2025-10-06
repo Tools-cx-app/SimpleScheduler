@@ -23,7 +23,7 @@ struct SimpleSchedulerData {
 #[derive(Clone, Debug)]
 enum SimpleSchedulerMode {
     Powersave,
-    Bablance,
+    Balance,
     Performance,
 }
 
@@ -111,9 +111,9 @@ impl Looper {
             let cpus = CpuFreqs::new(i)?;
             let (target_max_freq, target_min_freq) = {
                 let config = self.config.config().freqs.clone();
-                match self.mode.clone().unwrap_or(SimpleSchedulerMode::Bablance) {
+                match self.mode.clone().unwrap_or(SimpleSchedulerMode::Balance) {
                     SimpleSchedulerMode::Powersave => config.powersave,
-                    SimpleSchedulerMode::Bablance => config.balance,
+                    SimpleSchedulerMode::Balance => config.balance,
                     SimpleSchedulerMode::Performance => config.performance,
                 }
             };
@@ -147,7 +147,7 @@ impl Looper {
         let ret;
 
         if config.balance.contains(target) {
-            ret = SimpleSchedulerMode::Bablance;
+            ret = SimpleSchedulerMode::Balance;
         } else if config.powersave.contains(target) {
             ret = SimpleSchedulerMode::Powersave;
         } else if config.performance.contains(target) {
@@ -155,7 +155,7 @@ impl Looper {
         } else {
             ret = match config.general.as_str() {
                 "powersave" => SimpleSchedulerMode::Powersave,
-                "bablance" => SimpleSchedulerMode::Bablance,
+                "balance" => SimpleSchedulerMode::Balance,
                 "performance" => SimpleSchedulerMode::Performance,
                 _ => return Err(Error::ConfigParse("general option")),
             }
