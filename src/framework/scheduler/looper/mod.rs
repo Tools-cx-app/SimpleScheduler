@@ -3,7 +3,7 @@ mod fmt;
 use std::path::PathBuf;
 
 use anyhow::Result;
-use log::info;
+use log::{debug, info};
 
 use crate::{
     cpu::{freqs::CpuFreqs, governors::CpuGovernors, misc::read_policy},
@@ -101,6 +101,7 @@ impl Looper {
             } else {
                 governors.auto_write(&mut self.files_handler)?;
             }
+            debug!("write governors to cpu{} successful", governors.policy);
         }
         Ok(())
     }
@@ -117,6 +118,10 @@ impl Looper {
                 }
             };
             cpus.write_freq(target_max_freq, target_min_freq, &mut self.files_handler)?;
+            debug!(
+                "write ({target_max_freq}, {target_min_freq}) to cpu{} successful",
+                cpus.policy
+            );
         }
 
         Ok(())
