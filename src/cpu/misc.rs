@@ -5,7 +5,7 @@ use log::warn;
 
 use crate::cpu::freqs::CpuFreqs;
 
-pub fn get_freqs(freqs: &mut CpuFreqs, conut: isize) -> isize {
+pub fn get_freqs(freqs: &CpuFreqs, conut: isize) -> isize {
     freqs.freqs[conut as usize]
 }
 

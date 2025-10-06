@@ -5,7 +5,7 @@ use std::{
 
 use anyhow::{Context, Result};
 
-use crate::{cpu::governors, files_handler::FilesHandler};
+use crate::files_handler::FilesHandler;
 
 pub struct CpuGovernors {
     pub policy: i32,
