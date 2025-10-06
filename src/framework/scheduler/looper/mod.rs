@@ -90,6 +90,8 @@ impl Looper {
                 info!("New buffer for {name}(mode: {mode})");
                 self.last.topapps = self.data.topapps.pids();
             }
+
+            std::thread::sleep(std::time::Duration::from_secs(1));
         }
     }
 
