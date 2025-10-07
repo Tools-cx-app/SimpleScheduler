@@ -61,7 +61,6 @@ impl Looper {
     pub fn enter_looper(&mut self) -> Result<()> {
         let mut updated = false;
         loop {
-            self.reflash_governors(false)?;
             self.reflash_data();
             if !self.check_all() {
                 continue;
@@ -69,7 +68,7 @@ impl Looper {
             if !self.wake.info() {
                 self.mode = Some(SimpleSchedulerMode::Powersave);
                 self.write_cpu_freqs()?;
-                self.reflash_governors(false)?;
+                self.reflash_governors()?;
                 continue;
             }
             if !updated {
@@ -86,27 +85,23 @@ impl Looper {
             self.mode = Some(mode.clone());
 
             if name != name_cache && is_list {
-                self.reflash_governors(true)?;
+                self.reflash_governors()?;
                 self.write_cpu_freqs()?;
                 info!("New buffer for {name}(mode: {mode})");
                 self.last.topapps = self.data.topapps.pids();
             } else {
                 self.write_cpu_freqs()?;
-                self.reflash_governors(false)?;
+                self.reflash_governors()?;
             }
 
             std::thread::sleep(std::time::Duration::from_secs(1));
         }
     }
 
-    fn reflash_governors(&mut self, game: bool) -> Result<()> {
+    fn reflash_governors(&mut self) -> Result<()> {
         for i in self.policys.clone() {
             let governors = CpuGovernors::new(i)?;
-            if game {
-                governors.auto_write_games(&mut self.files_handler)?;
-            } else {
-                governors.auto_write(&mut self.files_handler)?;
-            }
+            governors.auto_write(&mut self.files_handler)?;
             debug!("write governors to cpu{} successful", governors.policy);
         }
         Ok(())
