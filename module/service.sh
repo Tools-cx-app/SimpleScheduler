@@ -6,4 +6,4 @@ until [ -d $MODDIR ]; do
   sleep 1
 done
 
-RUST_BACKTRACE=1 nohup $MODDIR/SimpleScheduler $MODDIR/config.toml >$LOG 2>&1 &
+RUST_BACKTRACE=1 nohup $MODDIR/SimpleScheduler /data/adb/SimpleScheduler/config.toml >$LOG 2>&1 &
