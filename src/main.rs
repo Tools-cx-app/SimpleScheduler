@@ -41,6 +41,9 @@ fn main() -> Result<()> {
             record.args()
         )
     });
+    #[cfg(debug_assertions)]
+    builder.filter_level(log::LevelFilter::Debug).init();
+    #[cfg(not(debug_assertions))]
     builder.filter_level(log::LevelFilter::Info).init();
 
     let args: Vec<_> = env::args().collect();
