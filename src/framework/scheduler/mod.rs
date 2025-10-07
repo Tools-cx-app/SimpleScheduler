@@ -1,4 +1,4 @@
-mod looper;
+pub mod looper;
 mod topapps;
 mod wake;
 
