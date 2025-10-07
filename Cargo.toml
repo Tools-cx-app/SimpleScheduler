@@ -30,6 +30,12 @@ toml = "0.9.7"
 serde_json = "1.0.145"
 serde = { version = "1.0.228", features = ["derive"] }
 
+[profile.dev]
+overflow-checks = false
+codegen-units = 1
+lto = true
+strip = true
+
 [profile.release]
 overflow-checks = false
 codegen-units = 1
