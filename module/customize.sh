@@ -24,6 +24,10 @@ fi
 
 set_perm_recursive $MODPATH 0 0 0755 0644
 set_perm $MODPATH/SimpleScheduler 0 0 0755
-
+CONFIGPATH="/data/adb/SimpleScheduler/"
+mkdir $CONFIGPATH
+touch $CONFIFPATH/config.toml
+set_perm_recursive $CONFIGPATH 0 0 0755 0644
+set_perm $CONFIGPATH/config.toml 0 0 0755
 local_print "配置文件夹：$MODPATH/config.toml" "Configuration folder: $MODPATH/config.toml"
 
