@@ -21,7 +21,7 @@ struct SimpleSchedulerData {
 }
 
 #[derive(Clone, Debug)]
-enum SimpleSchedulerMode {
+pub enum SimpleSchedulerMode {
     Powersave,
     Balance,
     Performance,
@@ -100,7 +100,7 @@ impl Looper {
 
     fn reflash_governors(&mut self) -> Result<()> {
         for i in self.policys.clone() {
-            let governors = CpuGovernors::new(i)?;
+            let governors = CpuGovernors::new(i, self.mode.clone().unwrap())?;
             governors.auto_write(&mut self.files_handler)?;
             debug!("write governors to cpu{} successful", governors.policy);
         }
