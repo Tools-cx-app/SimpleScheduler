@@ -83,6 +83,7 @@ impl Looper {
             let (mode, is_list) = self.list_include_target(&name)?;
 
             self.mode = Some(mode.clone());
+            debug!("current mode: {mode}");
 
             if name != name_cache && is_list {
                 self.reflash_governors()?;
