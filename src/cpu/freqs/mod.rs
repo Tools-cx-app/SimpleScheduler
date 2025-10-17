@@ -43,14 +43,15 @@ impl CpuFreqs {
         })
     }
 
-    fn verify_freq(&self, target_freq: isize) -> Result<()> {
+    fn verify_freq(&self, target_freq: isize) -> Result<bool> {
         let min_freq = *self.freqs.first().context("No frequencies available")?;
         let max_freq = *self.freqs.last().context("No frequencies available")?;
 
         if target_freq > max_freq && target_freq < min_freq {
             warn!("CPU Policy{}: target freq out of freq range", self.policy);
+            return Ok(true);
         }
-        Ok(())
+        Ok(false)
     }
 
     pub fn write_freq(
@@ -59,10 +60,15 @@ impl CpuFreqs {
         target_min_freq: isize,
         files_handler: &mut FilesHandler,
     ) -> Result<()> {
-        self.verify_freq(target_max_freq)
-            .context("Failed to freq verify")?;
-        self.verify_freq(target_min_freq)
-            .context("Failed to freq verify")?;
+        if self
+            .verify_freq(target_max_freq)
+            .context("Failed to freq verify")?
+            || self
+                .verify_freq(target_min_freq)
+                .context("Failed to freq verify")?
+        {
+            return Ok(());
+        }
 
         files_handler.write_with_handler(
             self.path.join("scaling_max_freq"),
