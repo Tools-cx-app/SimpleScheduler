@@ -56,7 +56,7 @@ impl CpuGovernors {
             SimpleSchedulerMode::Powersave => {
                 files_handler
                     .write_with_handler(self.path.join("scaling_governor"), "powersave")?;
-               return Ok(());
+                return Ok(());
             }
             SimpleSchedulerMode::Balance => {}
         }
