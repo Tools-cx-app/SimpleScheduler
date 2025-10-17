@@ -1,6 +1,6 @@
 id=SimpleScheduler
 name=SimpleScheduler
-version=v0.1.0
-versionCode=10
+version=v0.2.0
+versionCode=2000
 author=Tools-cx-app
 description=A Simple Scheduler for Android.
