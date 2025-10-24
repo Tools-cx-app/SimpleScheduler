@@ -68,7 +68,7 @@ impl CpuGovernors {
                 files_handler.write_with_handler(
                     self.path.join("scaling_governor"),
                     self.config.clone().performance,
-                )?
+                )
             }
             SimpleSchedulerMode::Powersave => {
                 if !self.verify_governors(self.config.clone().powersave) {
@@ -78,7 +78,7 @@ impl CpuGovernors {
                 files_handler.write_with_handler(
                     self.path.join("scaling_governor"),
                     self.config.clone().powersave,
-                )?
+                )
             }
             SimpleSchedulerMode::Balance => {
                 if !self.verify_governors(self.config.clone().balance) {
@@ -88,10 +88,8 @@ impl CpuGovernors {
                 files_handler.write_with_handler(
                     self.path.join("scaling_governor"),
                     self.config.clone().balance,
-                )?
+                )
             }
         }
-
-        Ok(())
     }
 }
