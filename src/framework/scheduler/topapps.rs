@@ -31,22 +31,19 @@ impl TopAppData {
     }
 
     fn parse_top_app(dump: &str) -> Vec<i32> {
-        let focused_app_line = match dump
+        let Some(focused_app_line) = dump
             .lines()
             .find(|line| line.trim().starts_with("mFocusedApp="))
-        {
-            Some(line) => line,
-            None => return Vec::new(),
+        else {
+            return Vec::new();
         };
-
-        let package_name = match Self::extract_package_name(focused_app_line) {
-            Some(name) => name,
-            None => return Vec::new(),
+        let Some(package_name) = Self::extract_package_name(focused_app_line) else {
+            return Vec::new();
         };
 
         // Try modern parser, if it fails, fall back to legacy parser.
-        let pid = Self::parse_a16_format(dump, &package_name)
-            .or_else(|| Self::parse_a15_format(dump, &package_name));
+        let pid = Self::parse_a16_format(dump, package_name)
+            .or_else(|| Self::parse_a15_format(dump, package_name));
 
         pid.map_or_else(Vec::new, |p| vec![p])
     }
@@ -63,11 +60,7 @@ impl TopAppData {
     fn parse_a16_format(dump: &str, package_name: &str) -> Option<i32> {
         let mut in_target_window_section = false;
         for line in dump.lines() {
-            if !in_target_window_section {
-                if line.contains("Window #") && line.contains(package_name) {
-                    in_target_window_section = true;
-                }
-            } else {
+            if in_target_window_section {
                 if line.contains("mSession=") {
                     let session_part = line.split("mSession=").nth(1)?;
                     let content_start = session_part.find('{')? + 1;
@@ -81,6 +74,8 @@ impl TopAppData {
                 if line.contains("Window #") {
                     return None;
                 }
+            } else if line.contains("Window #") && line.contains(package_name) {
+                in_target_window_section = true;
             }
         }
         None
@@ -101,12 +96,11 @@ impl TopAppData {
             }
 
             let trimmed_line = line.trim();
-            if trimmed_line.starts_with("mPackageName=") {
-                if let Some(pkg) = trimmed_line.split('=').nth(1) {
-                    if pkg == package_name {
-                        return last_pid_found;
-                    }
-                }
+            if trimmed_line.starts_with("mPackageName=")
+                && let Some(pkg) = trimmed_line.split('=').nth(1)
+                && pkg == package_name
+            {
+                return last_pid_found;
             }
         }
         None

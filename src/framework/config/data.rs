@@ -28,7 +28,7 @@ pub struct Freqs {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Governors {
     pub general: String,
-    pub powersave:String,
+    pub powersave: String,
     pub balance: String,
     pub performance: String,
 }
