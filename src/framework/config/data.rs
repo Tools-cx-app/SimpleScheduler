@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct ConfigData {
     pub config: Config,
     pub freqs: Freqs,
+    pub governors: Governors,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -22,4 +23,12 @@ pub struct Freqs {
     pub powersave: (isize, isize),
     pub balance: (isize, isize),
     pub performance: (isize, isize),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Governors {
+    pub general: String,
+    pub powersave:String,
+    pub balance: String,
+    pub performance: String,
 }

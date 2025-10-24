@@ -101,7 +101,11 @@ impl Looper {
 
     fn reflash_governors(&mut self) -> Result<()> {
         for i in self.policys.clone() {
-            let governors = CpuGovernors::new(i, self.mode.clone().unwrap())?;
+            let governors = CpuGovernors::new(
+                i,
+                self.mode.clone().unwrap(),
+                self.config.config().governors.clone(),
+            )?;
             governors.auto_write(&mut self.files_handler)?;
             debug!("write governors to cpu{} successful", governors.policy);
         }

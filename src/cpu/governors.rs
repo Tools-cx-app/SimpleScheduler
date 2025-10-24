@@ -5,17 +5,21 @@ use std::{
 
 use anyhow::{Context, Result};
 
-use crate::{files_handler::FilesHandler, framework::scheduler::looper::SimpleSchedulerMode};
+use crate::{
+    files_handler::FilesHandler,
+    framework::{config::data::Governors, scheduler::looper::SimpleSchedulerMode},
+};
 
 pub struct CpuGovernors {
     pub policy: i32,
     path: PathBuf,
     mode: SimpleSchedulerMode,
+    config: Governors,
     pub governors: Vec<String>,
 }
 
 impl CpuGovernors {
-    pub fn new<P>(path: P, mode: SimpleSchedulerMode) -> Result<Self>
+    pub fn new<P>(path: P, mode: SimpleSchedulerMode, config: Governors) -> Result<Self>
     where
         P: AsRef<Path>,
     {
@@ -42,28 +46,25 @@ impl CpuGovernors {
             policy,
             path,
             mode,
+            config,
             governors,
         })
     }
 
     pub fn auto_write(&self, files_handler: &mut FilesHandler) -> Result<()> {
         match self.mode {
-            SimpleSchedulerMode::Performance => {
-                files_handler
-                    .write_with_handler(self.path.join("scaling_governor"), "performance")?;
-                return Ok(());
-            }
-            SimpleSchedulerMode::Powersave => {
-                files_handler
-                    .write_with_handler(self.path.join("scaling_governor"), "powersave")?;
-                return Ok(());
-            }
-            SimpleSchedulerMode::Balance => {}
-        }
-        if self.governors.contains(&"walt".to_string()) {
-            files_handler.write_with_handler(self.path.join("scaling_governor"), "walt")?;
-        } else {
-            files_handler.write_with_handler(self.path.join("scaling_governor"), "schedutil")?;
+            SimpleSchedulerMode::Performance => files_handler.write_with_handler(
+                self.path.join("scaling_governor"),
+                self.config.clone().performance,
+            )?,
+            SimpleSchedulerMode::Powersave => files_handler.write_with_handler(
+                self.path.join("scaling_governor"),
+                self.config.clone().powersave,
+            )?,
+            SimpleSchedulerMode::Balance => files_handler.write_with_handler(
+                self.path.join("scaling_governor"),
+                self.config.clone().balance,
+            )?,
         }
 
         Ok(())
