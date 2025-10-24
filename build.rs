@@ -1,4 +1,4 @@
-use std::{fs, io::Write};
+use std::{fs, io::Write, process::Command};
 
 use anyhow::Result;
 use serde::Deserialize;
@@ -50,6 +50,15 @@ fn cal_version_code(version: &str) -> Result<usize> {
     Ok(manjor * 100000 + minor * 1000 + patch)
 }
 
+fn cal_short_hash() -> Result<String> {
+    Ok(String::from_utf8(
+        Command::new("git")
+            .args(["rev-parse", "--short", "HEAD"])
+            .output()?
+            .stdout,
+    )?)
+}
+
 fn gen_module_prop(data: &CargoConfig) -> Result<()> {
     let package = &data.package;
     let id = package.name.replace('-', "_");
@@ -75,7 +84,11 @@ fn gen_module_prop(data: &CargoConfig) -> Result<()> {
 
     writeln!(file, "id={id}")?;
     writeln!(file, "name={}", package.name)?;
-    writeln!(file, "version=v{}", package.version)?;
+    writeln!(
+        file,
+        "version=v{}",
+        format!("{}-{}", package.version, cal_short_hash()?).trim()
+    )?;
     writeln!(file, "versionCode={version_code}")?;
     writeln!(file, "author={author}")?;
     writeln!(file, "description={}", package.description)?;
