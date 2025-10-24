@@ -51,20 +51,45 @@ impl CpuGovernors {
         })
     }
 
+    fn verify_governors<S>(&self, target: S) -> bool
+    where
+        S: Into<String>,
+    {
+        self.governors.contains(&target.into())
+    }
+
     pub fn auto_write(&self, files_handler: &mut FilesHandler) -> Result<()> {
         match self.mode {
-            SimpleSchedulerMode::Performance => files_handler.write_with_handler(
-                self.path.join("scaling_governor"),
-                self.config.clone().performance,
-            )?,
-            SimpleSchedulerMode::Powersave => files_handler.write_with_handler(
-                self.path.join("scaling_governor"),
-                self.config.clone().powersave,
-            )?,
-            SimpleSchedulerMode::Balance => files_handler.write_with_handler(
-                self.path.join("scaling_governor"),
-                self.config.clone().balance,
-            )?,
+            SimpleSchedulerMode::Performance => {
+                if !self.verify_governors(self.config.clone().performance) {
+                    log::error!("governors option is error");
+                    return Ok(());
+                }
+                files_handler.write_with_handler(
+                    self.path.join("scaling_governor"),
+                    self.config.clone().performance,
+                )?
+            }
+            SimpleSchedulerMode::Powersave => {
+                if !self.verify_governors(self.config.clone().powersave) {
+                    log::error!("governors option is error");
+                    return Ok(());
+                }
+                files_handler.write_with_handler(
+                    self.path.join("scaling_governor"),
+                    self.config.clone().powersave,
+                )?
+            }
+            SimpleSchedulerMode::Balance => {
+                if !self.verify_governors(self.config.clone().balance) {
+                    log::error!("governors option is error");
+                    return Ok(());
+                }
+                files_handler.write_with_handler(
+                    self.path.join("scaling_governor"),
+                    self.config.clone().balance,
+                )?
+            }
         }
 
         Ok(())
