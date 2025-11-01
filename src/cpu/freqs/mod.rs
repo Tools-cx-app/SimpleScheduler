@@ -54,12 +54,23 @@ impl CpuFreqs {
         Ok(false)
     }
 
+    fn unit(target_freq: isize) -> isize {
+        if target_freq.to_string().len() <= 4 {
+            target_freq * 1000
+        } else {
+            target_freq
+        }
+    }
+
     pub fn write_freq(
         &self,
         target_max_freq: isize,
         target_min_freq: isize,
         files_handler: &mut FilesHandler,
     ) -> Result<()> {
+        let target_max_freq = Self::unit(target_max_freq);
+        let target_min_freq = Self::unit(target_min_freq);
+
         if self
             .verify_freq(target_max_freq)
             .context("Failed to freq verify")?
