@@ -6,7 +6,7 @@ use std::{
 use anyhow::{Context, Result};
 use log::warn;
 
-use crate::files_handler::FilesHandler;
+use crate::{files_handler::FilesHandler, framework::config::data::Freqs};
 
 pub struct CpuFreqs {
     pub policy: i32,
@@ -62,7 +62,7 @@ impl CpuFreqs {
         }
     }
 
-    pub fn write_freq(
+    fn write_freq(
         &self,
         target_max_freq: isize,
         target_min_freq: isize,
@@ -89,6 +89,23 @@ impl CpuFreqs {
             self.path.join("scaling_min_freq"),
             target_min_freq.to_string(),
         )?;
+        Ok(())
+    }
+
+    pub fn write_freqs(&self, freqs: &Freqs, files_handler: &mut FilesHandler) -> Result<()> {
+        let (target_max_freq, target_min_freq) = {
+            if self.policy == 0 {
+                freqs.small
+            } else if self.policy > 0 && self.policy < 5 {
+                freqs.middle
+            } else {
+                freqs.big
+            }
+        };
+
+        self.write_freq(target_max_freq, target_min_freq, 
+         files_handler)?;
+        
         Ok(())
     }
 }

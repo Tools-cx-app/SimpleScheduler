@@ -104,7 +104,7 @@ impl Looper {
             let governors = CpuGovernors::new(
                 i,
                 self.mode.clone().unwrap(),
-                self.config.config().governors.clone(),
+                self.config.config().cpu.governors.clone(),
             )?;
             governors.auto_write(&mut self.files_handler)?;
             debug!("write governors to cpu{} successful", governors.policy);
@@ -115,19 +115,16 @@ impl Looper {
     fn write_cpu_freqs(&mut self) -> Result<()> {
         for i in self.policys.clone() {
             let cpus = CpuFreqs::new(i)?;
-            let (target_max_freq, target_min_freq) = {
-                let config = self.config.config().freqs.clone();
+            let freqs = {
+                let config = self.config.config().cpu.clone();
                 match self.mode.clone().unwrap_or(SimpleSchedulerMode::Balance) {
                     SimpleSchedulerMode::Powersave => config.powersave,
                     SimpleSchedulerMode::Balance => config.balance,
                     SimpleSchedulerMode::Performance => config.performance,
                 }
             };
-            cpus.write_freq(target_max_freq, target_min_freq, &mut self.files_handler)?;
-            debug!(
-                "write ({target_max_freq}, {target_min_freq}) to cpu{} successful",
-                cpus.policy
-            );
+            cpus.write_freqs(&freqs.clone(), &mut self.files_handler)?;
+            debug!("write freqs to cpu{} successful", cpus.policy);
         }
 
         Ok(())

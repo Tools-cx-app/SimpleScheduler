@@ -3,12 +3,6 @@ use std::{fs, path::PathBuf};
 use anyhow::Result;
 use log::warn;
 
-use crate::cpu::freqs::CpuFreqs;
-
-pub fn get_freqs(freqs: &CpuFreqs, conut: isize) -> isize {
-    freqs.freqs[conut as usize]
-}
-
 pub fn read_policy() -> Result<Vec<PathBuf>> {
     let mut paths = Vec::new();
     for entry in fs::read_dir("/sys/devices/system/cpu/cpufreq")? {
